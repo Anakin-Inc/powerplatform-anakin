@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Generated files and certification checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: "3.12"
+      - name: Regenerate the swagger and readme
+        run: |
+          python tools/build_swagger.py certified-connectors/Anakin
+          python tools/build_readme.py certified-connectors/Anakin
+      - name: Fail if the committed files are out of date
+        run: git diff --exit-code -- certified-connectors/Anakin
+      - name: Certification checks
+        run: >
+          uv run --no-project --with jsonschema --with openapi-spec-validator --with json5
+          python tools/check_connector.py certified-connectors/Anakin tools/schemas
