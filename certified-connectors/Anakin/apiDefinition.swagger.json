@@ -216,6 +216,11 @@
                   "description": "The scraped URL.",
                   "title": "URL"
                 },
+                "jobType": {
+                  "type": "string",
+                  "description": "The job type.",
+                  "title": "Job type"
+                },
                 "country": {
                   "type": "string",
                   "description": "The country the page was fetched from.",
@@ -240,7 +245,8 @@
                   "type": "object",
                   "description": "Structured data extracted by AI, when JSON extraction was on.",
                   "additionalProperties": {},
-                  "title": "Extracted JSON"
+                  "title": "Extracted JSON",
+                  "x-nullable": true
                 },
                 "summary": {
                   "type": "string",
@@ -297,7 +303,8 @@
                 "error": {
                   "type": "string",
                   "description": "The error message, present when the job failed.",
-                  "title": "Error"
+                  "title": "Error",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -368,6 +375,11 @@
                   "description": "The scraped URL.",
                   "title": "URL"
                 },
+                "jobType": {
+                  "type": "string",
+                  "description": "The job type.",
+                  "title": "Job type"
+                },
                 "country": {
                   "type": "string",
                   "description": "The country the page was fetched from.",
@@ -392,7 +404,8 @@
                   "type": "object",
                   "description": "Structured data extracted by AI, when JSON extraction was on.",
                   "additionalProperties": {},
-                  "title": "Extracted JSON"
+                  "title": "Extracted JSON",
+                  "x-nullable": true
                 },
                 "summary": {
                   "type": "string",
@@ -449,7 +462,8 @@
                 "error": {
                   "type": "string",
                   "description": "The error message, present when the job failed.",
-                  "title": "Error"
+                  "title": "Error",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -695,6 +709,11 @@
                   "description": "A status message.",
                   "title": "Message"
                 },
+                "jobType": {
+                  "type": "string",
+                  "description": "The job type.",
+                  "title": "Job type"
+                },
                 "generatedJson": {
                   "type": "object",
                   "description": "The research result.",
@@ -722,7 +741,8 @@
                 "error": {
                   "type": "string",
                   "description": "The error message, present when the job failed.",
-                  "title": "Error"
+                  "title": "Error",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -918,7 +938,8 @@
                 "error": {
                   "type": "string",
                   "description": "The error message, present when the job failed.",
-                  "title": "Error"
+                  "title": "Error",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -1151,7 +1172,8 @@
                 "error": {
                   "type": "string",
                   "description": "The error message, present when the job failed.",
-                  "title": "Error"
+                  "title": "Error",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -1255,7 +1277,8 @@
                       "description": {
                         "type": "string",
                         "description": "What the action does.",
-                        "title": "Action description"
+                        "title": "Action description",
+                        "x-nullable": true
                       },
                       "mode": {
                         "type": "string",
@@ -1376,7 +1399,8 @@
                       "description": {
                         "type": "string",
                         "description": "What the site's actions cover.",
-                        "title": "Site description"
+                        "title": "Site description",
+                        "x-nullable": true
                       },
                       "auth_required": {
                         "type": "boolean",
@@ -1469,7 +1493,8 @@
                     "description": {
                       "type": "string",
                       "description": "What the site's actions cover.",
-                      "title": "Site description"
+                      "title": "Site description",
+                      "x-nullable": true
                     },
                     "auth_required": {
                       "type": "boolean",
@@ -1508,7 +1533,8 @@
                       "description": {
                         "type": "string",
                         "description": "What the action does.",
-                        "title": "Action description"
+                        "title": "Action description",
+                        "x-nullable": true
                       },
                       "type": {
                         "type": "string",
@@ -1644,9 +1670,10 @@
                 },
                 "data": {
                   "type": "object",
-                  "description": "The data the action returned.",
+                  "description": "The data the action returned. It is empty when the action returns files instead.",
                   "additionalProperties": {},
-                  "title": "Data"
+                  "title": "Data",
+                  "x-nullable": true
                 },
                 "files": {
                   "type": "array",
@@ -1763,9 +1790,10 @@
                 },
                 "data": {
                   "type": "object",
-                  "description": "The data the action returned.",
+                  "description": "The data the action returned. It is empty when the action returns files instead.",
                   "additionalProperties": {},
-                  "title": "Data"
+                  "title": "Data",
+                  "x-nullable": true
                 },
                 "files": {
                   "type": "array",
@@ -2046,17 +2074,20 @@
                     "action_id": {
                       "type": "string",
                       "description": "The ID of the published action, once the build succeeds.",
-                      "title": "Action ID"
+                      "title": "Action ID",
+                      "x-nullable": true
                     },
                     "catalog_slug": {
                       "type": "string",
                       "description": "The slug of the site the action was published under.",
-                      "title": "Site slug"
+                      "title": "Site slug",
+                      "x-nullable": true
                     },
                     "error": {
                       "type": "string",
                       "description": "The error message, when the build failed.",
-                      "title": "Error"
+                      "title": "Error",
+                      "x-nullable": true
                     },
                     "created_at": {
                       "type": "string",
@@ -2147,17 +2178,20 @@
                 "action_id": {
                   "type": "string",
                   "description": "The ID of the published action, once the build succeeds.",
-                  "title": "Action ID"
+                  "title": "Action ID",
+                  "x-nullable": true
                 },
                 "catalog_slug": {
                   "type": "string",
                   "description": "The slug of the site the action was published under.",
-                  "title": "Site slug"
+                  "title": "Site slug",
+                  "x-nullable": true
                 },
                 "error": {
                   "type": "string",
                   "description": "The error message, when the build failed.",
-                  "title": "Error"
+                  "title": "Error",
+                  "x-nullable": true
                 },
                 "created_at": {
                   "type": "string",
@@ -2369,24 +2403,28 @@
                   "type": "string",
                   "description": "When the next check runs.",
                   "title": "Next check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "lastCheckedAt": {
                   "type": "string",
                   "description": "When the last check ran.",
                   "title": "Last check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "expiresAt": {
                   "type": "string",
                   "description": "When the monitor pauses itself.",
                   "title": "Expires at",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "alertWebhookUrl": {
                   "type": "string",
                   "description": "The webhook that receives change alerts.",
-                  "title": "Alert webhook URL"
+                  "title": "Alert webhook URL",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -2476,24 +2514,28 @@
                         "type": "string",
                         "description": "When the next check runs.",
                         "title": "Next check",
-                        "format": "date-time"
+                        "format": "date-time",
+                        "x-nullable": true
                       },
                       "lastCheckedAt": {
                         "type": "string",
                         "description": "When the last check ran.",
                         "title": "Last check",
-                        "format": "date-time"
+                        "format": "date-time",
+                        "x-nullable": true
                       },
                       "expiresAt": {
                         "type": "string",
                         "description": "When the monitor pauses itself.",
                         "title": "Expires at",
-                        "format": "date-time"
+                        "format": "date-time",
+                        "x-nullable": true
                       },
                       "alertWebhookUrl": {
                         "type": "string",
                         "description": "The webhook that receives change alerts.",
-                        "title": "Alert webhook URL"
+                        "title": "Alert webhook URL",
+                        "x-nullable": true
                       },
                       "createdAt": {
                         "type": "string",
@@ -2591,24 +2633,28 @@
                   "type": "string",
                   "description": "When the next check runs.",
                   "title": "Next check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "lastCheckedAt": {
                   "type": "string",
                   "description": "When the last check ran.",
                   "title": "Last check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "expiresAt": {
                   "type": "string",
                   "description": "When the monitor pauses itself.",
                   "title": "Expires at",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "alertWebhookUrl": {
                   "type": "string",
                   "description": "The webhook that receives change alerts.",
-                  "title": "Alert webhook URL"
+                  "title": "Alert webhook URL",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -2716,7 +2762,8 @@
                       "summary": {
                         "type": "string",
                         "description": "A summary of the change.",
-                        "title": "Change summary"
+                        "title": "Change summary",
+                        "x-nullable": true
                       },
                       "diffJson": {
                         "type": "object",
@@ -2814,24 +2861,28 @@
                   "type": "string",
                   "description": "When the next check runs.",
                   "title": "Next check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "lastCheckedAt": {
                   "type": "string",
                   "description": "When the last check ran.",
                   "title": "Last check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "expiresAt": {
                   "type": "string",
                   "description": "When the monitor pauses itself.",
                   "title": "Expires at",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "alertWebhookUrl": {
                   "type": "string",
                   "description": "The webhook that receives change alerts.",
-                  "title": "Alert webhook URL"
+                  "title": "Alert webhook URL",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -2924,24 +2975,28 @@
                   "type": "string",
                   "description": "When the next check runs.",
                   "title": "Next check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "lastCheckedAt": {
                   "type": "string",
                   "description": "When the last check ran.",
                   "title": "Last check",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "expiresAt": {
                   "type": "string",
                   "description": "When the monitor pauses itself.",
                   "title": "Expires at",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "x-nullable": true
                 },
                 "alertWebhookUrl": {
                   "type": "string",
                   "description": "The webhook that receives change alerts.",
-                  "title": "Alert webhook URL"
+                  "title": "Alert webhook URL",
+                  "x-nullable": true
                 },
                 "createdAt": {
                   "type": "string",
@@ -3362,13 +3417,15 @@
                         "type": "string",
                         "description": "When the session was last used.",
                         "title": "Last used at",
-                        "format": "date-time"
+                        "format": "date-time",
+                        "x-nullable": true
                       },
                       "expiresAt": {
                         "type": "string",
                         "description": "When the session expires.",
                         "title": "Expires at",
-                        "format": "date-time"
+                        "format": "date-time",
+                        "x-nullable": true
                       }
                     }
                   },

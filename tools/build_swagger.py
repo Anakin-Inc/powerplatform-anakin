@@ -58,6 +58,11 @@ def obj(props, desc, title=None, required=None):
     return out
 
 
+def nullable(schema):
+    """The API can return null for this field."""
+    return {**schema, "x-nullable": True}
+
+
 def dyn(desc, title=None):
     """An object whose shape depends on the request (AI output, a Wire action's data)."""
     out = {"type": "object", "description": desc, "additionalProperties": {}}
@@ -137,7 +142,7 @@ JOB_STARTED = obj(
 )
 
 JOB_STATUS = s("The job status: pending, processing, completed or failed.", "Status")
-JOB_ERROR = s("The error message, present when the job failed.", "Error")
+JOB_ERROR = nullable(s("The error message, present when the job failed.", "Error"))
 DURATION = i("The processing time in milliseconds.", "Duration (ms)")
 CREATED_AT = s("When the job was created.", "Created at", format="date-time")
 COMPLETED_AT = s("When the job finished.", "Completed at", format="date-time")
@@ -147,12 +152,13 @@ SCRAPE_RESULT = obj(
         "id": s("The job ID.", "Job ID"),
         "status": JOB_STATUS,
         "url": s("The scraped URL.", "URL"),
+        "jobType": s("The job type.", "Job type"),
         "country": s("The country the page was fetched from.", "Country"),
         "markdown": s("The page content as markdown.", "Markdown"),
         "html": s("The raw HTML of the page.", "HTML"),
         "cleanedHtml": s("The HTML with nonessential elements removed.", "Cleaned HTML"),
-        "generatedJson": dyn("Structured data extracted by AI, when JSON extraction was on.",
-                             "Extracted JSON"),
+        "generatedJson": nullable(dyn("Structured data extracted by AI, when JSON extraction "
+                                      "was on.", "Extracted JSON")),
         "summary": s("An AI summary of the page, when the summary format was requested.",
                      "Summary"),
         "links": arr(obj({"href": s("The link target.", "Link URL"),
@@ -228,6 +234,7 @@ AGENTIC_RESULT = obj(
         "job_id": s("The job ID, while the job is still running.", "Running job ID"),
         "status": JOB_STATUS,
         "message": s("A status message.", "Message"),
+        "jobType": s("The job type.", "Job type"),
         "generatedJson": obj(
             {
                 "summary": s("A summary of the research findings.", "Research summary"),
@@ -252,7 +259,7 @@ WIRE_ACTION_MATCH = obj(
         "catalog_slug": s("The slug of the site the action belongs to.", "Site slug"),
         "catalog_name": s("The name of the site the action belongs to.", "Site name"),
         "name": s("The action name.", "Action name"),
-        "description": s("What the action does.", "Action description"),
+        "description": nullable(s("What the action does.", "Action description")),
         "mode": s("How the action runs, sync or async.", "Mode"),
         "auth_mode": s("Whether the action needs a sign in: none, optional or required.",
                        "Authentication mode"),
@@ -284,7 +291,7 @@ WIRE_CATALOG = obj(
         "url": s("The site URL.", "Site URL"),
         "domain": s("The site domain.", "Site domain"),
         "category": s("The site category.", "Site category"),
-        "description": s("What the site's actions cover.", "Site description"),
+        "description": nullable(s("What the site's actions cover.", "Site description")),
         "auth_required": b("Whether any action on the site needs a sign in.",
                            "Sign in required"),
         "status": s("The site status, active or pending review.", "Site status"),
@@ -300,7 +307,8 @@ WIRE_JOB = obj(
         "poll_url": s("The path to check the job.", "Poll path"),
         "retry_after_ms": i("How long to wait before checking again, in milliseconds.",
                             "Retry after (ms)"),
-        "data": dyn("The data the action returned.", "Data"),
+        "data": nullable(dyn("The data the action returned. It is empty when the action "
+                             "returns files instead.", "Data")),
         "files": arr(
             obj(
                 {
@@ -337,9 +345,9 @@ WIRE_BUILD = obj(
         "status": s("The build status: pending, processing, success or failed.", "Status"),
         "credits_charged": i("The credits held for the build, refunded if it fails.",
                              "Credits charged"),
-        "action_id": s("The ID of the published action, once the build succeeds.", "Action ID"),
-        "catalog_slug": s("The slug of the site the action was published under.", "Site slug"),
-        "error": s("The error message, when the build failed.", "Error"),
+        "action_id": nullable(s("The ID of the published action, once the build succeeds.", "Action ID")),
+        "catalog_slug": nullable(s("The slug of the site the action was published under.", "Site slug")),
+        "error": nullable(s("The error message, when the build failed.", "Error")),
         "created_at": s("When the build was requested.", "Created at", format="date-time"),
         "updated_at": s("When the build last changed.", "Updated at", format="date-time"),
     },
@@ -356,10 +364,10 @@ MONITOR = obj(
         "isActive": b("Whether the monitor is running.", "Active"),
         "aiMode": b("Whether AI filters out trivial changes.", "AI mode"),
         "creditCostPerRun": i("The credits each check costs.", "Credits per check"),
-        "nextRunAt": s("When the next check runs.", "Next check", format="date-time"),
-        "lastCheckedAt": s("When the last check ran.", "Last check", format="date-time"),
-        "expiresAt": s("When the monitor pauses itself.", "Expires at", format="date-time"),
-        "alertWebhookUrl": s("The webhook that receives change alerts.", "Alert webhook URL"),
+        "nextRunAt": nullable(s("When the next check runs.", "Next check", format="date-time")),
+        "lastCheckedAt": nullable(s("When the last check ran.", "Last check", format="date-time")),
+        "expiresAt": nullable(s("When the monitor pauses itself.", "Expires at", format="date-time")),
+        "alertWebhookUrl": nullable(s("The webhook that receives change alerts.", "Alert webhook URL")),
         "createdAt": s("When the monitor was created.", "Created at", format="date-time"),
         "updatedAt": s("When the monitor last changed.", "Updated at", format="date-time"),
     },
@@ -371,7 +379,7 @@ MONITOR_CHANGE = obj(
         "id": s("The change ID.", "Change ID"),
         "monitorId": s("The monitor that detected the change.", "Monitor ID"),
         "changedAt": s("When the change was detected.", "Changed at", format="date-time"),
-        "summary": s("A summary of the change.", "Change summary"),
+        "summary": nullable(s("A summary of the change.", "Change summary")),
         "diffJson": dyn("The structured difference between the two checks.", "Difference"),
         "createdAt": s("When the change was recorded.", "Created at", format="date-time"),
     },
@@ -418,8 +426,8 @@ SESSION = obj(
         "websiteDomain": s("The domain the session is signed in to.", "Website domain"),
         "isActive": b("Whether the session can be used.", "Active"),
         "createdAt": s("When the session was saved.", "Created at", format="date-time"),
-        "lastUsedAt": s("When the session was last used.", "Last used at", format="date-time"),
-        "expiresAt": s("When the session expires.", "Expires at", format="date-time"),
+        "lastUsedAt": nullable(s("When the session was last used.", "Last used at", format="date-time")),
+        "expiresAt": nullable(s("When the session expires.", "Expires at", format="date-time")),
     },
     "A saved browser session.",
 )
@@ -649,7 +657,7 @@ op("get", "/wire/catalog/{slug}", "GetWireCatalog", "Get Wire site actions",
        "actions": arr(obj({
            "action_id": s("The action ID to pass to Run Wire action.", "Action ID"),
            "name": s("The action name.", "Action name"),
-           "description": s("What the action does.", "Action description"),
+           "description": nullable(s("What the action does.", "Action description")),
            "type": s("Whether the action reads data or changes something: read or write.",
                      "Action type"),
            "mode": s("How the action runs, sync or async.", "Mode"),
