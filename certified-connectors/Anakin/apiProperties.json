@@ -1,0 +1,25 @@
+{
+  "properties": {
+    "connectionParameters": {
+      "api_key": {
+        "type": "securestring",
+        "uiDefinition": {
+          "displayName": "API Key",
+          "description": "Your Anakin API key. Get one free at https://anakin.io/dashboard.",
+          "tooltip": "Provide your Anakin API key",
+          "constraints": {
+            "tabIndex": 2,
+            "clearText": false,
+            "required": "true"
+          }
+        }
+      }
+    },
+    "iconBrandColor": "#1F302C",
+    "capabilities": [
+      "actions"
+    ],
+    "publisher": "Anakin",
+    "stackOwner": "Anakin"
+  }
+}

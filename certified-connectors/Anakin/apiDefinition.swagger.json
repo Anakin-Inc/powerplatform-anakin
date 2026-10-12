@@ -1,0 +1,3595 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Anakin",
+    "description": "Anakin turns websites into clean, structured data. Scrape pages, search the web, crawl sites, run deep research, use ready made actions on hundreds of popular sites, monitor pages for changes, compare AI engine answers and run AI browser tasks.",
+    "version": "1.0",
+    "contact": {
+      "name": "Anakin Support",
+      "url": "https://anakin.io/support",
+      "email": "support@anakin.io"
+    }
+  },
+  "host": "api.anakin.io",
+  "basePath": "/v1",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/url-scraper": {
+      "post": {
+        "operationId": "ScrapeUrl",
+        "summary": "Scrape a web page",
+        "description": "Starts fetching one web page as markdown and HTML, with optional AI extraction. Use Get scrape result with the returned job ID to get the content.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "x-ms-summary": "URL",
+                  "description": "The page to fetch, starting with http or https."
+                },
+                "useBrowser": {
+                  "type": "boolean",
+                  "x-ms-summary": "Use browser",
+                  "description": "Whether to render the page in a browser. Use it for pages that need JavaScript; it is slower and costs more.",
+                  "default": false
+                },
+                "generateJson": {
+                  "type": "boolean",
+                  "x-ms-summary": "Extract JSON",
+                  "description": "Whether to also extract structured data from the page with AI.",
+                  "default": false
+                },
+                "outputSchema": {
+                  "type": "object",
+                  "x-ms-summary": "Output schema",
+                  "description": "A JSON schema of the fields to extract. Setting it turns on JSON extraction.",
+                  "additionalProperties": {},
+                  "x-ms-visibility": "advanced"
+                },
+                "formats": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Formats",
+                  "description": "The outputs to produce: markdown, html, cleanedHtml, links, images or summary. By default markdown, HTML and cleaned HTML.",
+                  "x-ms-visibility": "advanced"
+                },
+                "country": {
+                  "type": "string",
+                  "x-ms-summary": "Country",
+                  "description": "The two letter country code to fetch from, for example us or de.",
+                  "x-ms-visibility": "advanced",
+                  "default": "us"
+                },
+                "forceFresh": {
+                  "type": "boolean",
+                  "x-ms-summary": "Skip cache",
+                  "description": "Whether to fetch the page again instead of using the 24 hour cache.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "sessionId": {
+                  "type": "string",
+                  "x-ms-summary": "Session ID",
+                  "description": "The ID of a saved browser session, for pages behind a sign in.",
+                  "x-ms-visibility": "advanced"
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The started job.",
+              "properties": {
+                "jobId": {
+                  "type": "string",
+                  "description": "The job ID. Pass it to the matching get result action.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status, pending when the job is queued.",
+                  "title": "Status"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/url-scraper/scrape": {
+      "post": {
+        "operationId": "ScrapeUrlNow",
+        "summary": "Scrape a web page now",
+        "description": "Fetches one web page and waits up to 50 seconds for the result, so no follow up action is needed. This suits apps, which have no loops. If the page takes longer, the status is still processing; pass the returned ID to Get scrape result.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "x-ms-summary": "URL",
+                  "description": "The page to fetch, starting with http or https."
+                },
+                "useBrowser": {
+                  "type": "boolean",
+                  "x-ms-summary": "Use browser",
+                  "description": "Whether to render the page in a browser. Use it for pages that need JavaScript; it is slower.",
+                  "default": false
+                },
+                "generateJson": {
+                  "type": "boolean",
+                  "x-ms-summary": "Extract JSON",
+                  "description": "Whether to also extract structured data from the page with AI.",
+                  "default": false
+                },
+                "outputSchema": {
+                  "type": "object",
+                  "x-ms-summary": "Output schema",
+                  "description": "A JSON schema of the fields to extract. Setting it turns on JSON extraction.",
+                  "additionalProperties": {},
+                  "x-ms-visibility": "advanced"
+                },
+                "formats": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Formats",
+                  "description": "The outputs to produce: markdown, html, cleanedHtml, links, images or summary. By default markdown, HTML and cleaned HTML.",
+                  "x-ms-visibility": "advanced"
+                },
+                "country": {
+                  "type": "string",
+                  "x-ms-summary": "Country",
+                  "description": "The two letter country code to fetch from, for example us or de.",
+                  "x-ms-visibility": "advanced",
+                  "default": "us"
+                },
+                "forceFresh": {
+                  "type": "boolean",
+                  "x-ms-summary": "Skip cache",
+                  "description": "Whether to fetch the page again instead of using the 24 hour cache.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "sessionId": {
+                  "type": "string",
+                  "x-ms-summary": "Session ID",
+                  "description": "The ID of a saved browser session, for pages behind a sign in.",
+                  "x-ms-visibility": "advanced"
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The scrape job and its result.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The job ID.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status: pending, processing, completed or failed.",
+                  "title": "Status"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The scraped URL.",
+                  "title": "URL"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "The country the page was fetched from.",
+                  "title": "Country"
+                },
+                "markdown": {
+                  "type": "string",
+                  "description": "The page content as markdown.",
+                  "title": "Markdown"
+                },
+                "html": {
+                  "type": "string",
+                  "description": "The raw HTML of the page.",
+                  "title": "HTML"
+                },
+                "cleanedHtml": {
+                  "type": "string",
+                  "description": "The HTML with nonessential elements removed.",
+                  "title": "Cleaned HTML"
+                },
+                "generatedJson": {
+                  "type": "object",
+                  "description": "Structured data extracted by AI, when JSON extraction was on.",
+                  "additionalProperties": {},
+                  "title": "Extracted JSON"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "An AI summary of the page, when the summary format was requested.",
+                  "title": "Summary"
+                },
+                "links": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A link on the page.",
+                    "properties": {
+                      "href": {
+                        "type": "string",
+                        "description": "The link target.",
+                        "title": "Link URL"
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The link text.",
+                        "title": "Link text"
+                      }
+                    }
+                  },
+                  "description": "The links on the page, when the links format was requested.",
+                  "title": "Links"
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "An image on the page.",
+                    "properties": {
+                      "src": {
+                        "type": "string",
+                        "description": "The image URL.",
+                        "title": "Image URL"
+                      },
+                      "alt": {
+                        "type": "string",
+                        "description": "The image alternative text.",
+                        "title": "Image alt text"
+                      }
+                    }
+                  },
+                  "description": "The images on the page, when the images format was requested.",
+                  "title": "Images"
+                },
+                "cached": {
+                  "type": "boolean",
+                  "description": "Whether the result came from the 24 hour cache.",
+                  "title": "Cached"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, present when the job failed.",
+                  "title": "Error"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the job was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "completedAt": {
+                  "type": "string",
+                  "description": "When the job finished.",
+                  "title": "Completed at",
+                  "format": "date-time"
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The processing time in milliseconds.",
+                  "title": "Duration (ms)"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/url-scraper/{id}": {
+      "get": {
+        "operationId": "GetScrapeResult",
+        "summary": "Get scrape result",
+        "description": "Gets the status and content of a scrape job. Repeat until the status is completed or failed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Job ID",
+            "description": "The job ID returned by the start action.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The scrape job and its result.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The job ID.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status: pending, processing, completed or failed.",
+                  "title": "Status"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The scraped URL.",
+                  "title": "URL"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "The country the page was fetched from.",
+                  "title": "Country"
+                },
+                "markdown": {
+                  "type": "string",
+                  "description": "The page content as markdown.",
+                  "title": "Markdown"
+                },
+                "html": {
+                  "type": "string",
+                  "description": "The raw HTML of the page.",
+                  "title": "HTML"
+                },
+                "cleanedHtml": {
+                  "type": "string",
+                  "description": "The HTML with nonessential elements removed.",
+                  "title": "Cleaned HTML"
+                },
+                "generatedJson": {
+                  "type": "object",
+                  "description": "Structured data extracted by AI, when JSON extraction was on.",
+                  "additionalProperties": {},
+                  "title": "Extracted JSON"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "An AI summary of the page, when the summary format was requested.",
+                  "title": "Summary"
+                },
+                "links": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A link on the page.",
+                    "properties": {
+                      "href": {
+                        "type": "string",
+                        "description": "The link target.",
+                        "title": "Link URL"
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The link text.",
+                        "title": "Link text"
+                      }
+                    }
+                  },
+                  "description": "The links on the page, when the links format was requested.",
+                  "title": "Links"
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "An image on the page.",
+                    "properties": {
+                      "src": {
+                        "type": "string",
+                        "description": "The image URL.",
+                        "title": "Image URL"
+                      },
+                      "alt": {
+                        "type": "string",
+                        "description": "The image alternative text.",
+                        "title": "Image alt text"
+                      }
+                    }
+                  },
+                  "description": "The images on the page, when the images format was requested.",
+                  "title": "Images"
+                },
+                "cached": {
+                  "type": "boolean",
+                  "description": "Whether the result came from the 24 hour cache.",
+                  "title": "Cached"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, present when the job failed.",
+                  "title": "Error"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the job was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "completedAt": {
+                  "type": "string",
+                  "description": "When the job finished.",
+                  "title": "Completed at",
+                  "format": "date-time"
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The processing time in milliseconds.",
+                  "title": "Duration (ms)"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/search": {
+      "post": {
+        "operationId": "Search",
+        "summary": "Search the web",
+        "description": "Searches the web and returns result URLs, titles and snippets right away.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "x-ms-summary": "Query",
+                  "description": "What to search for, in natural language."
+                },
+                "limit": {
+                  "type": "integer",
+                  "x-ms-summary": "Number of results",
+                  "description": "The number of results to return, from 1 to 20.",
+                  "format": "int32",
+                  "default": 5
+                }
+              },
+              "required": [
+                "prompt"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The search results.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The search ID.",
+                  "title": "Search ID"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A search result.",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "description": "The result URL.",
+                        "title": "Result URL"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "The page title.",
+                        "title": "Result title"
+                      },
+                      "snippet": {
+                        "type": "string",
+                        "description": "A relevant excerpt from the page.",
+                        "title": "Result snippet"
+                      },
+                      "date": {
+                        "type": "string",
+                        "description": "The publication date, when known.",
+                        "title": "Result date"
+                      },
+                      "last_updated": {
+                        "type": "string",
+                        "description": "When the page was last updated, when known.",
+                        "title": "Result last updated"
+                      }
+                    }
+                  },
+                  "description": "The search results.",
+                  "title": "Results"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/agentic-search": {
+      "post": {
+        "operationId": "StartAgenticSearch",
+        "summary": "Start deep research",
+        "description": "Starts researching a question across many sources. It searches, reads the cited pages and returns a summary and structured data, which can take a few minutes. Use Get research result with the returned job ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "x-ms-summary": "Research question",
+                  "description": "The question to research, as specific as possible."
+                },
+                "useBrowser": {
+                  "type": "boolean",
+                  "x-ms-summary": "Use browser",
+                  "description": "Whether to render cited pages in a browser.",
+                  "x-ms-visibility": "advanced",
+                  "default": true
+                },
+                "schema": {
+                  "type": "object",
+                  "x-ms-summary": "Output schema",
+                  "description": "A JSON schema for the structured result. By default it is inferred from the question.",
+                  "additionalProperties": {},
+                  "x-ms-visibility": "advanced"
+                }
+              },
+              "required": [
+                "prompt"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The started research job.",
+              "properties": {
+                "job_id": {
+                  "type": "string",
+                  "description": "The job ID. Pass it to Get research result.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status, pending when the job is queued.",
+                  "title": "Status"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A confirmation message.",
+                  "title": "Message"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "When the job was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/agentic-search/{id}": {
+      "get": {
+        "operationId": "GetAgenticSearchResult",
+        "summary": "Get research result",
+        "description": "Gets the status and result of a research job. Repeat until the status is completed or failed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Job ID",
+            "description": "The job ID returned by the start action.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The research job and its result.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The job ID, once the job has finished.",
+                  "title": "Job ID"
+                },
+                "job_id": {
+                  "type": "string",
+                  "description": "The job ID, while the job is still running.",
+                  "title": "Running job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status: pending, processing, completed or failed.",
+                  "title": "Status"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A status message.",
+                  "title": "Message"
+                },
+                "generatedJson": {
+                  "type": "object",
+                  "description": "The research result.",
+                  "title": "Research result",
+                  "properties": {
+                    "summary": {
+                      "type": "string",
+                      "description": "A summary of the research findings.",
+                      "title": "Research summary"
+                    },
+                    "structured_data": {
+                      "type": "object",
+                      "description": "The structured findings, shaped by the data schema.",
+                      "additionalProperties": {},
+                      "title": "Structured data"
+                    },
+                    "data_schema": {
+                      "type": "object",
+                      "description": "The schema of the structured findings.",
+                      "additionalProperties": {},
+                      "title": "Data schema"
+                    }
+                  }
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, present when the job failed.",
+                  "title": "Error"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the job was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "completedAt": {
+                  "type": "string",
+                  "description": "When the job finished.",
+                  "title": "Completed at",
+                  "format": "date-time"
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The processing time in milliseconds.",
+                  "title": "Duration (ms)"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/map": {
+      "post": {
+        "operationId": "StartMap",
+        "summary": "Map website URLs",
+        "description": "Starts finding the URLs on a website, to decide which pages to crawl. Use Get map result with the returned job ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "x-ms-summary": "URL",
+                  "description": "The site or section to start from."
+                },
+                "limit": {
+                  "type": "integer",
+                  "x-ms-summary": "Maximum URLs",
+                  "description": "The maximum number of URLs to return, up to 5000.",
+                  "format": "int32",
+                  "default": 100
+                },
+                "depth": {
+                  "type": "integer",
+                  "x-ms-summary": "Depth",
+                  "description": "How many links to follow from the start URL, up to 5.",
+                  "format": "int32",
+                  "x-ms-visibility": "advanced",
+                  "default": 2
+                },
+                "search": {
+                  "type": "string",
+                  "x-ms-summary": "Filter",
+                  "description": "Only return URLs that contain this text.",
+                  "x-ms-visibility": "advanced"
+                },
+                "includeSubdomains": {
+                  "type": "boolean",
+                  "x-ms-summary": "Include subdomains",
+                  "description": "Whether to also follow links to subdomains.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "includeExternalLinks": {
+                  "type": "boolean",
+                  "x-ms-summary": "Include external links",
+                  "description": "Whether to also return links to other sites.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "useBrowser": {
+                  "type": "boolean",
+                  "x-ms-summary": "Use browser",
+                  "description": "Whether to render pages in a browser before reading links.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The started job.",
+              "properties": {
+                "jobId": {
+                  "type": "string",
+                  "description": "The job ID. Pass it to the matching get result action.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status, pending when the job is queued.",
+                  "title": "Status"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/map/{id}": {
+      "get": {
+        "operationId": "GetMapResult",
+        "summary": "Get map result",
+        "description": "Gets the status and URLs of a map job. Repeat until the status is completed or failed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Job ID",
+            "description": "The job ID returned by the start action.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The map job and the URLs it found.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The job ID.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status: pending, processing, completed or failed.",
+                  "title": "Status"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL the discovery started from.",
+                  "title": "URL"
+                },
+                "links": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The URLs found on the site.",
+                  "title": "Links"
+                },
+                "totalLinks": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The number of URLs found on the site.",
+                  "title": "Total links"
+                },
+                "externalLinks": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The URLs found on other sites.",
+                  "title": "External links"
+                },
+                "totalExternalLinks": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The number of URLs found on other sites.",
+                  "title": "Total external links"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, present when the job failed.",
+                  "title": "Error"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the job was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "completedAt": {
+                  "type": "string",
+                  "description": "When the job finished.",
+                  "title": "Completed at",
+                  "format": "date-time"
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The processing time in milliseconds.",
+                  "title": "Duration (ms)"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/crawl": {
+      "post": {
+        "operationId": "StartCrawl",
+        "summary": "Crawl a website",
+        "description": "Starts fetching many pages of one site as markdown. Use Get crawl result with the returned job ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "x-ms-summary": "URL",
+                  "description": "The URL to start crawling from."
+                },
+                "maxPages": {
+                  "type": "integer",
+                  "x-ms-summary": "Maximum pages",
+                  "description": "The maximum number of pages to fetch, up to 100. This is the main cost control.",
+                  "format": "int32",
+                  "default": 10
+                },
+                "depth": {
+                  "type": "integer",
+                  "x-ms-summary": "Depth",
+                  "description": "How many links to follow from the start URL, up to 5.",
+                  "format": "int32",
+                  "x-ms-visibility": "advanced",
+                  "default": 1
+                },
+                "includePatterns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Include patterns",
+                  "description": "Only crawl URLs that match one of these patterns, for example /blog/*.",
+                  "x-ms-visibility": "advanced"
+                },
+                "excludePatterns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Exclude patterns",
+                  "description": "Skip URLs that match any of these patterns.",
+                  "x-ms-visibility": "advanced"
+                },
+                "useBrowser": {
+                  "type": "boolean",
+                  "x-ms-summary": "Use browser",
+                  "description": "Whether to render each page in a browser.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "country": {
+                  "type": "string",
+                  "x-ms-summary": "Country",
+                  "description": "The two letter country code to fetch from, for example us or de.",
+                  "x-ms-visibility": "advanced",
+                  "default": "us"
+                },
+                "sessionId": {
+                  "type": "string",
+                  "x-ms-summary": "Session ID",
+                  "description": "The ID of a saved browser session, for pages behind a sign in.",
+                  "x-ms-visibility": "advanced"
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The started job.",
+              "properties": {
+                "jobId": {
+                  "type": "string",
+                  "description": "The job ID. Pass it to the matching get result action.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status, pending when the job is queued.",
+                  "title": "Status"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/crawl/{id}": {
+      "get": {
+        "operationId": "GetCrawlResult",
+        "summary": "Get crawl result",
+        "description": "Gets the status and pages of a crawl job. Repeat until the status is completed or failed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Job ID",
+            "description": "The job ID returned by the start action.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The crawl job and its pages.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The job ID.",
+                  "title": "Job ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The job status: pending, processing, completed or failed.",
+                  "title": "Status"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL the crawl started from.",
+                  "title": "URL"
+                },
+                "totalPages": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The number of pages attempted.",
+                  "title": "Total pages"
+                },
+                "completedPages": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The number of pages fetched successfully.",
+                  "title": "Completed pages"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "One crawled page.",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "description": "The page URL.",
+                        "title": "Page URL"
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "The page status, completed or failed.",
+                        "title": "Page status"
+                      },
+                      "markdown": {
+                        "type": "string",
+                        "description": "The page content as markdown.",
+                        "title": "Page markdown"
+                      },
+                      "html": {
+                        "type": "string",
+                        "description": "The raw HTML of the page.",
+                        "title": "Page HTML"
+                      },
+                      "error": {
+                        "type": "string",
+                        "description": "The error message, present when the page failed.",
+                        "title": "Page error"
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The time taken for this page in milliseconds.",
+                        "title": "Page duration (ms)"
+                      }
+                    }
+                  },
+                  "description": "The crawled pages.",
+                  "title": "Pages"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, present when the job failed.",
+                  "title": "Error"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the job was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "completedAt": {
+                  "type": "string",
+                  "description": "When the job finished.",
+                  "title": "Completed at",
+                  "format": "date-time"
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The processing time in milliseconds.",
+                  "title": "Duration (ms)"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/resolve": {
+      "get": {
+        "operationId": "DiscoverWireActions",
+        "summary": "Find Wire actions",
+        "description": "Finds ready made Wire actions for a task, such as searching listings on a well known site. Wire actions return structured data and are faster than scraping.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-ms-summary": "Task",
+            "description": "The task in natural language, for example top phones on walmart."
+          },
+          {
+            "name": "catalog",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-ms-summary": "Site",
+            "description": "Only return actions for this site slug, for example amazon.",
+            "x-ms-visibility": "advanced"
+          },
+          {
+            "name": "auth_mode",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-ms-summary": "Sign in",
+            "description": "Only return actions with this sign in mode.",
+            "x-ms-visibility": "advanced",
+            "enum": [
+              "none",
+              "optional",
+              "required"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The matching Wire actions.",
+              "properties": {
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A matching Wire action.",
+                    "properties": {
+                      "action_id": {
+                        "type": "string",
+                        "description": "The action ID to pass to Run Wire action.",
+                        "title": "Action ID"
+                      },
+                      "catalog_slug": {
+                        "type": "string",
+                        "description": "The slug of the site the action belongs to.",
+                        "title": "Site slug"
+                      },
+                      "catalog_name": {
+                        "type": "string",
+                        "description": "The name of the site the action belongs to.",
+                        "title": "Site name"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The action name.",
+                        "title": "Action name"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "What the action does.",
+                        "title": "Action description"
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "How the action runs, sync or async.",
+                        "title": "Mode"
+                      },
+                      "auth_mode": {
+                        "type": "string",
+                        "description": "Whether the action needs a sign in: none, optional or required.",
+                        "title": "Authentication mode"
+                      },
+                      "connected": {
+                        "type": "boolean",
+                        "description": "Whether you already have an active credential for this site.",
+                        "title": "Connected"
+                      },
+                      "credits": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The base credit cost of one run.",
+                        "title": "Credits"
+                      },
+                      "params": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "description": "A parameter the action takes.",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "The parameter name.",
+                              "title": "Parameter name"
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "The parameter type.",
+                              "title": "Parameter type"
+                            },
+                            "required": {
+                              "type": "boolean",
+                              "description": "Whether the parameter is required.",
+                              "title": "Parameter required"
+                            },
+                            "description": {
+                              "type": "string",
+                              "description": "What the parameter is for.",
+                              "title": "Parameter description"
+                            }
+                          }
+                        },
+                        "description": "The parameters the action takes.",
+                        "title": "Parameters"
+                      }
+                    }
+                  },
+                  "description": "The matching actions.",
+                  "title": "Actions"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/catalog": {
+      "get": {
+        "operationId": "ListWireCatalogs",
+        "summary": "List Wire sites",
+        "description": "Lists every site in the Wire catalog and how many actions each has.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The Wire catalog.",
+              "properties": {
+                "catalog": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A site in the Wire catalog.",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The site ID.",
+                        "title": "Site ID"
+                      },
+                      "slug": {
+                        "type": "string",
+                        "description": "The site slug.",
+                        "title": "Site slug"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The site name.",
+                        "title": "Site name"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "The site URL.",
+                        "title": "Site URL"
+                      },
+                      "domain": {
+                        "type": "string",
+                        "description": "The site domain.",
+                        "title": "Site domain"
+                      },
+                      "category": {
+                        "type": "string",
+                        "description": "The site category.",
+                        "title": "Site category"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "What the site's actions cover.",
+                        "title": "Site description"
+                      },
+                      "auth_required": {
+                        "type": "boolean",
+                        "description": "Whether any action on the site needs a sign in.",
+                        "title": "Sign in required"
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "The site status, active or pending review.",
+                        "title": "Site status"
+                      },
+                      "action_count": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The number of actions available on the site.",
+                        "title": "Action count"
+                      }
+                    }
+                  },
+                  "description": "The sites in the catalog.",
+                  "title": "Sites"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/catalog/{slug}": {
+      "get": {
+        "operationId": "GetWireCatalog",
+        "summary": "Get Wire site actions",
+        "description": "Gets one site in the Wire catalog with all its actions and their parameters.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Site slug",
+            "description": "The site slug, for example walmart.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The Wire site and its actions.",
+              "properties": {
+                "catalog": {
+                  "type": "object",
+                  "description": "A site in the Wire catalog.",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The site ID.",
+                      "title": "Site ID"
+                    },
+                    "slug": {
+                      "type": "string",
+                      "description": "The site slug.",
+                      "title": "Site slug"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "The site name.",
+                      "title": "Site name"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "The site URL.",
+                      "title": "Site URL"
+                    },
+                    "domain": {
+                      "type": "string",
+                      "description": "The site domain.",
+                      "title": "Site domain"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": "The site category.",
+                      "title": "Site category"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "What the site's actions cover.",
+                      "title": "Site description"
+                    },
+                    "auth_required": {
+                      "type": "boolean",
+                      "description": "Whether any action on the site needs a sign in.",
+                      "title": "Sign in required"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The site status, active or pending review.",
+                      "title": "Site status"
+                    },
+                    "action_count": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "The number of actions available on the site.",
+                      "title": "Action count"
+                    }
+                  }
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A Wire action.",
+                    "properties": {
+                      "action_id": {
+                        "type": "string",
+                        "description": "The action ID to pass to Run Wire action.",
+                        "title": "Action ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The action name.",
+                        "title": "Action name"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "What the action does.",
+                        "title": "Action description"
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Whether the action reads data or changes something: read or write.",
+                        "title": "Action type"
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "How the action runs, sync or async.",
+                        "title": "Mode"
+                      },
+                      "auth_mode": {
+                        "type": "string",
+                        "description": "Whether the action needs a sign in: none, optional or required.",
+                        "title": "Authentication mode"
+                      },
+                      "credits_per_call": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The base credit cost of one run.",
+                        "title": "Credits per run"
+                      },
+                      "parameters": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "description": "A parameter the action takes.",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "The parameter name.",
+                              "title": "Parameter name"
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "The parameter type.",
+                              "title": "Parameter type"
+                            },
+                            "required": {
+                              "type": "boolean",
+                              "description": "Whether the parameter is required.",
+                              "title": "Parameter required"
+                            },
+                            "description": {
+                              "type": "string",
+                              "description": "What the parameter is for.",
+                              "title": "Parameter description"
+                            }
+                          }
+                        },
+                        "description": "The parameters the action takes.",
+                        "title": "Parameters"
+                      }
+                    }
+                  },
+                  "description": "The site's actions.",
+                  "title": "Actions"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/task": {
+      "post": {
+        "operationId": "RunWireAction",
+        "summary": "Run Wire action",
+        "description": "Runs a Wire action with its parameters. Some actions return data right away; others return a job ID to pass to Get Wire job result.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "action_id": {
+                  "type": "string",
+                  "x-ms-summary": "Action ID",
+                  "description": "The action to run, from Find Wire actions or Get Wire site actions."
+                },
+                "params": {
+                  "type": "object",
+                  "x-ms-summary": "Parameters",
+                  "description": "The action's parameters as JSON, matching its parameter list.",
+                  "additionalProperties": {}
+                },
+                "credential_id": {
+                  "type": "string",
+                  "x-ms-summary": "Credential ID",
+                  "description": "The credential to use for actions that need a sign in, from List Wire identities.",
+                  "x-ms-visibility": "advanced"
+                }
+              },
+              "required": [
+                "action_id"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The Wire run and its result.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "The run status: processing, completed or failed.",
+                  "title": "Status"
+                },
+                "job_id": {
+                  "type": "string",
+                  "description": "The job ID, when the action runs in the background.",
+                  "title": "Job ID"
+                },
+                "poll_url": {
+                  "type": "string",
+                  "description": "The path to check the job.",
+                  "title": "Poll path"
+                },
+                "retry_after_ms": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "How long to wait before checking again, in milliseconds.",
+                  "title": "Retry after (ms)"
+                },
+                "data": {
+                  "type": "object",
+                  "description": "The data the action returned.",
+                  "additionalProperties": {},
+                  "title": "Data"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A file the action produced.",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The file name.",
+                        "title": "File name"
+                      },
+                      "content_type": {
+                        "type": "string",
+                        "description": "The file type.",
+                        "title": "File type"
+                      },
+                      "size_bytes": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The file size in bytes.",
+                        "title": "File size"
+                      }
+                    }
+                  },
+                  "description": "The files the action produced, when it returns files instead of data.",
+                  "title": "Files"
+                },
+                "credits_used": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits charged for this run.",
+                  "title": "Credits used"
+                },
+                "execution_ms": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The run time in milliseconds.",
+                  "title": "Execution time (ms)"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "The error, when the run failed.",
+                  "title": "Error",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "The error code.",
+                      "title": "Error code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "The error message.",
+                      "title": "Error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/jobs/{id}": {
+      "get": {
+        "operationId": "GetWireJobResult",
+        "summary": "Get Wire job result",
+        "description": "Gets the status and data of a Wire job. Repeat until the status is completed or failed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Job ID",
+            "description": "The job ID returned by Run Wire action.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The Wire run and its result.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "The run status: processing, completed or failed.",
+                  "title": "Status"
+                },
+                "job_id": {
+                  "type": "string",
+                  "description": "The job ID, when the action runs in the background.",
+                  "title": "Job ID"
+                },
+                "poll_url": {
+                  "type": "string",
+                  "description": "The path to check the job.",
+                  "title": "Poll path"
+                },
+                "retry_after_ms": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "How long to wait before checking again, in milliseconds.",
+                  "title": "Retry after (ms)"
+                },
+                "data": {
+                  "type": "object",
+                  "description": "The data the action returned.",
+                  "additionalProperties": {},
+                  "title": "Data"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A file the action produced.",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The file name.",
+                        "title": "File name"
+                      },
+                      "content_type": {
+                        "type": "string",
+                        "description": "The file type.",
+                        "title": "File type"
+                      },
+                      "size_bytes": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The file size in bytes.",
+                        "title": "File size"
+                      }
+                    }
+                  },
+                  "description": "The files the action produced, when it returns files instead of data.",
+                  "title": "Files"
+                },
+                "credits_used": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits charged for this run.",
+                  "title": "Credits used"
+                },
+                "execution_ms": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The run time in milliseconds.",
+                  "title": "Execution time (ms)"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "The error, when the run failed.",
+                  "title": "Error",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "The error code.",
+                      "title": "Error code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "The error message.",
+                      "title": "Error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/identities": {
+      "get": {
+        "operationId": "ListWireIdentities",
+        "summary": "List Wire identities",
+        "description": "Lists your saved site sign ins. Use a credential ID from here in Run Wire action.",
+        "parameters": [
+          {
+            "name": "catalog_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-ms-summary": "Site ID",
+            "description": "Only return identities for this site ID.",
+            "x-ms-visibility": "advanced"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "Your Wire identities.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "The request status.",
+                  "title": "Request status"
+                },
+                "identities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A saved identity.",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The identity ID.",
+                        "title": "Identity ID"
+                      },
+                      "catalog_id": {
+                        "type": "string",
+                        "description": "The site the identity belongs to.",
+                        "title": "Site ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The identity name.",
+                        "title": "Identity name"
+                      },
+                      "is_default": {
+                        "type": "boolean",
+                        "description": "Whether this is your default identity for the site.",
+                        "title": "Default"
+                      },
+                      "credentials": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "description": "A credential.",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "The credential ID. Use it as the credential ID in Run Wire action.",
+                              "title": "Credential ID"
+                            },
+                            "credential_type": {
+                              "type": "string",
+                              "description": "The credential type.",
+                              "title": "Credential type"
+                            },
+                            "status": {
+                              "type": "string",
+                              "description": "The credential status, active or expired.",
+                              "title": "Credential status"
+                            },
+                            "expires_at": {
+                              "type": "string",
+                              "description": "When the credential expires.",
+                              "title": "Credential expires at",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "description": "The identity's credentials.",
+                        "title": "Credentials"
+                      }
+                    }
+                  },
+                  "description": "Your identities.",
+                  "title": "Identities"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/build-request": {
+      "post": {
+        "operationId": "RequestWireBuild",
+        "summary": "Request new Wire actions",
+        "description": "Asks Wire to build and test new actions for a site that is not in the catalog yet. It charges credits, which are refunded if the build fails. Track it with Get Wire build.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "website_url": {
+                  "type": "string",
+                  "x-ms-summary": "Website URL",
+                  "description": "The site to build actions for."
+                },
+                "goal": {
+                  "type": "string",
+                  "x-ms-summary": "Goal",
+                  "description": "What the actions should extract or do. Be specific, since the builder works from this description."
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Capabilities",
+                  "description": "Separate capabilities to build as separate actions, for example search products.",
+                  "x-ms-visibility": "advanced"
+                },
+                "visibility": {
+                  "type": "string",
+                  "x-ms-summary": "Visibility",
+                  "description": "Who can use the actions: private, the default, or public.",
+                  "x-ms-visibility": "advanced",
+                  "enum": [
+                    "private",
+                    "public"
+                  ]
+                },
+                "force": {
+                  "type": "boolean",
+                  "x-ms-summary": "Build anyway",
+                  "description": "Whether to build even if similar actions already exist for the site.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                }
+              },
+              "required": [
+                "website_url",
+                "goal"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The new build request.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "The request status.",
+                  "title": "Request status"
+                },
+                "build_request": {
+                  "type": "object",
+                  "description": "A Wire build request.",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The build request ID.",
+                      "title": "Build ID"
+                    },
+                    "website_url": {
+                      "type": "string",
+                      "description": "The site the actions are built for.",
+                      "title": "Website URL"
+                    },
+                    "domain": {
+                      "type": "string",
+                      "description": "The site domain.",
+                      "title": "Domain"
+                    },
+                    "goal": {
+                      "type": "string",
+                      "description": "What the actions should do.",
+                      "title": "Goal"
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "description": "Who can use the actions, private or public.",
+                      "title": "Visibility"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The build status: pending, processing, success or failed.",
+                      "title": "Status"
+                    },
+                    "credits_charged": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "The credits held for the build, refunded if it fails.",
+                      "title": "Credits charged"
+                    },
+                    "action_id": {
+                      "type": "string",
+                      "description": "The ID of the published action, once the build succeeds.",
+                      "title": "Action ID"
+                    },
+                    "catalog_slug": {
+                      "type": "string",
+                      "description": "The slug of the site the action was published under.",
+                      "title": "Site slug"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "The error message, when the build failed.",
+                      "title": "Error"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "When the build was requested.",
+                      "title": "Created at",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "description": "When the build last changed.",
+                      "title": "Updated at",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/wire/build-requests/{id}": {
+      "get": {
+        "operationId": "GetWireBuild",
+        "summary": "Get Wire build",
+        "description": "Gets a Wire build request, including its status and the published action once it succeeds.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Build ID",
+            "description": "The build ID returned by Request new Wire actions.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "A Wire build request.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The build request ID.",
+                  "title": "Build ID"
+                },
+                "website_url": {
+                  "type": "string",
+                  "description": "The site the actions are built for.",
+                  "title": "Website URL"
+                },
+                "domain": {
+                  "type": "string",
+                  "description": "The site domain.",
+                  "title": "Domain"
+                },
+                "goal": {
+                  "type": "string",
+                  "description": "What the actions should do.",
+                  "title": "Goal"
+                },
+                "visibility": {
+                  "type": "string",
+                  "description": "Who can use the actions, private or public.",
+                  "title": "Visibility"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The build status: pending, processing, success or failed.",
+                  "title": "Status"
+                },
+                "credits_charged": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits held for the build, refunded if it fails.",
+                  "title": "Credits charged"
+                },
+                "action_id": {
+                  "type": "string",
+                  "description": "The ID of the published action, once the build succeeds.",
+                  "title": "Action ID"
+                },
+                "catalog_slug": {
+                  "type": "string",
+                  "description": "The slug of the site the action was published under.",
+                  "title": "Site slug"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, when the build failed.",
+                  "title": "Error"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "When the build was requested.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "description": "When the build last changed.",
+                  "title": "Updated at",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/monitors": {
+      "post": {
+        "operationId": "CreateMonitor",
+        "summary": "Create website monitor",
+        "description": "Creates a monitor that checks a page, a whole site or a Wire action on a schedule and records changes. Every check costs credits.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "x-ms-summary": "URL",
+                  "description": "The page to watch, or the root URL for a site monitor."
+                },
+                "intervalMinutes": {
+                  "type": "integer",
+                  "x-ms-summary": "Interval (minutes)",
+                  "description": "The minutes between checks, at least 15.",
+                  "format": "int32",
+                  "default": 60,
+                  "minimum": 15
+                },
+                "scope": {
+                  "type": "string",
+                  "x-ms-summary": "Scope",
+                  "description": "What to watch: page, site or wire.",
+                  "x-ms-visibility": "advanced",
+                  "enum": [
+                    "page",
+                    "site",
+                    "wire"
+                  ],
+                  "default": "page"
+                },
+                "watchMode": {
+                  "type": "string",
+                  "x-ms-summary": "Watch mode",
+                  "description": "Compare the full page, or only the fields in the output schema.",
+                  "x-ms-visibility": "advanced",
+                  "enum": [
+                    "full_page",
+                    "specific_data"
+                  ],
+                  "default": "full_page"
+                },
+                "outputSchema": {
+                  "type": "object",
+                  "x-ms-summary": "Output schema",
+                  "description": "A JSON schema of the fields to track, required for the specific data watch mode.",
+                  "additionalProperties": {},
+                  "x-ms-visibility": "advanced"
+                },
+                "aiMode": {
+                  "type": "boolean",
+                  "x-ms-summary": "AI mode",
+                  "description": "Whether AI should ignore trivial changes and summarize real ones. It adds 1 credit per check.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "aiGoal": {
+                  "type": "string",
+                  "x-ms-summary": "AI goal",
+                  "description": "Which changes count, for example only when the price drops.",
+                  "x-ms-visibility": "advanced"
+                },
+                "alertWebhookUrl": {
+                  "type": "string",
+                  "x-ms-summary": "Alert webhook URL",
+                  "description": "A webhook to send each change to.",
+                  "x-ms-visibility": "advanced"
+                },
+                "alertEmails": {
+                  "type": "string",
+                  "x-ms-summary": "Alert emails",
+                  "description": "Email addresses to notify, separated by commas.",
+                  "x-ms-visibility": "advanced"
+                },
+                "useBrowser": {
+                  "type": "boolean",
+                  "x-ms-summary": "Use browser",
+                  "description": "Whether to render the page in a browser for each check.",
+                  "x-ms-visibility": "advanced",
+                  "default": false
+                },
+                "country": {
+                  "type": "string",
+                  "x-ms-summary": "Country",
+                  "description": "The two letter country code to fetch from, for example us or de.",
+                  "x-ms-visibility": "advanced",
+                  "default": "us"
+                },
+                "sessionId": {
+                  "type": "string",
+                  "x-ms-summary": "Session ID",
+                  "description": "The ID of a saved browser session, for pages behind a sign in.",
+                  "x-ms-visibility": "advanced"
+                },
+                "maxPages": {
+                  "type": "integer",
+                  "x-ms-summary": "Maximum pages",
+                  "description": "For site monitors, the pages to crawl per check.",
+                  "format": "int32",
+                  "x-ms-visibility": "advanced"
+                },
+                "wireActionId": {
+                  "type": "string",
+                  "x-ms-summary": "Wire action ID",
+                  "description": "For Wire monitors, the action to run each check.",
+                  "x-ms-visibility": "advanced"
+                },
+                "wireParams": {
+                  "type": "object",
+                  "x-ms-summary": "Wire parameters",
+                  "description": "For Wire monitors, the action's parameters as JSON.",
+                  "additionalProperties": {},
+                  "x-ms-visibility": "advanced"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "x-ms-summary": "End date",
+                  "description": "The date the monitor pauses itself, such as 2026-12-31.",
+                  "x-ms-visibility": "advanced"
+                }
+              },
+              "required": [
+                "url",
+                "intervalMinutes"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "A website monitor.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The monitor ID.",
+                  "title": "Monitor ID"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The watched URL.",
+                  "title": "URL"
+                },
+                "scope": {
+                  "type": "string",
+                  "description": "What is watched: page, site or wire.",
+                  "title": "Scope"
+                },
+                "watchMode": {
+                  "type": "string",
+                  "description": "How changes are compared: full page or specific data.",
+                  "title": "Watch mode"
+                },
+                "intervalMinutes": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The minutes between checks.",
+                  "title": "Interval (minutes)"
+                },
+                "isActive": {
+                  "type": "boolean",
+                  "description": "Whether the monitor is running.",
+                  "title": "Active"
+                },
+                "aiMode": {
+                  "type": "boolean",
+                  "description": "Whether AI filters out trivial changes.",
+                  "title": "AI mode"
+                },
+                "creditCostPerRun": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits each check costs.",
+                  "title": "Credits per check"
+                },
+                "nextRunAt": {
+                  "type": "string",
+                  "description": "When the next check runs.",
+                  "title": "Next check",
+                  "format": "date-time"
+                },
+                "lastCheckedAt": {
+                  "type": "string",
+                  "description": "When the last check ran.",
+                  "title": "Last check",
+                  "format": "date-time"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "description": "When the monitor pauses itself.",
+                  "title": "Expires at",
+                  "format": "date-time"
+                },
+                "alertWebhookUrl": {
+                  "type": "string",
+                  "description": "The webhook that receives change alerts.",
+                  "title": "Alert webhook URL"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the monitor was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "When the monitor last changed.",
+                  "title": "Updated at",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      },
+      "get": {
+        "operationId": "ListMonitors",
+        "summary": "List website monitors",
+        "description": "Lists your website monitors with their status and next check.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "Your monitors.",
+              "properties": {
+                "monitors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A website monitor.",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The monitor ID.",
+                        "title": "Monitor ID"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "The watched URL.",
+                        "title": "URL"
+                      },
+                      "scope": {
+                        "type": "string",
+                        "description": "What is watched: page, site or wire.",
+                        "title": "Scope"
+                      },
+                      "watchMode": {
+                        "type": "string",
+                        "description": "How changes are compared: full page or specific data.",
+                        "title": "Watch mode"
+                      },
+                      "intervalMinutes": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The minutes between checks.",
+                        "title": "Interval (minutes)"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "description": "Whether the monitor is running.",
+                        "title": "Active"
+                      },
+                      "aiMode": {
+                        "type": "boolean",
+                        "description": "Whether AI filters out trivial changes.",
+                        "title": "AI mode"
+                      },
+                      "creditCostPerRun": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The credits each check costs.",
+                        "title": "Credits per check"
+                      },
+                      "nextRunAt": {
+                        "type": "string",
+                        "description": "When the next check runs.",
+                        "title": "Next check",
+                        "format": "date-time"
+                      },
+                      "lastCheckedAt": {
+                        "type": "string",
+                        "description": "When the last check ran.",
+                        "title": "Last check",
+                        "format": "date-time"
+                      },
+                      "expiresAt": {
+                        "type": "string",
+                        "description": "When the monitor pauses itself.",
+                        "title": "Expires at",
+                        "format": "date-time"
+                      },
+                      "alertWebhookUrl": {
+                        "type": "string",
+                        "description": "The webhook that receives change alerts.",
+                        "title": "Alert webhook URL"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "description": "When the monitor was created.",
+                        "title": "Created at",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "When the monitor last changed.",
+                        "title": "Updated at",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "description": "Your monitors.",
+                  "title": "Monitors"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/monitors/{id}": {
+      "get": {
+        "operationId": "GetMonitor",
+        "summary": "Get website monitor",
+        "description": "Gets one monitor's settings and status.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Monitor ID",
+            "description": "The monitor ID, from List website monitors.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "A website monitor.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The monitor ID.",
+                  "title": "Monitor ID"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The watched URL.",
+                  "title": "URL"
+                },
+                "scope": {
+                  "type": "string",
+                  "description": "What is watched: page, site or wire.",
+                  "title": "Scope"
+                },
+                "watchMode": {
+                  "type": "string",
+                  "description": "How changes are compared: full page or specific data.",
+                  "title": "Watch mode"
+                },
+                "intervalMinutes": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The minutes between checks.",
+                  "title": "Interval (minutes)"
+                },
+                "isActive": {
+                  "type": "boolean",
+                  "description": "Whether the monitor is running.",
+                  "title": "Active"
+                },
+                "aiMode": {
+                  "type": "boolean",
+                  "description": "Whether AI filters out trivial changes.",
+                  "title": "AI mode"
+                },
+                "creditCostPerRun": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits each check costs.",
+                  "title": "Credits per check"
+                },
+                "nextRunAt": {
+                  "type": "string",
+                  "description": "When the next check runs.",
+                  "title": "Next check",
+                  "format": "date-time"
+                },
+                "lastCheckedAt": {
+                  "type": "string",
+                  "description": "When the last check ran.",
+                  "title": "Last check",
+                  "format": "date-time"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "description": "When the monitor pauses itself.",
+                  "title": "Expires at",
+                  "format": "date-time"
+                },
+                "alertWebhookUrl": {
+                  "type": "string",
+                  "description": "The webhook that receives change alerts.",
+                  "title": "Alert webhook URL"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the monitor was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "When the monitor last changed.",
+                  "title": "Updated at",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteMonitor",
+        "summary": "Delete website monitor",
+        "description": "Permanently deletes a monitor and its history.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Monitor ID",
+            "description": "The monitor ID, from List website monitors.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The outcome.",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the request succeeded.",
+                  "title": "Success"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/monitors/{id}/changes": {
+      "get": {
+        "operationId": "GetMonitorChanges",
+        "summary": "Get monitor changes",
+        "description": "Gets the changes a monitor detected, each with a summary and the differences.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Monitor ID",
+            "description": "The monitor ID, from List website monitors.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The monitor's changes.",
+              "properties": {
+                "changes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A detected change.",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The change ID.",
+                        "title": "Change ID"
+                      },
+                      "monitorId": {
+                        "type": "string",
+                        "description": "The monitor that detected the change.",
+                        "title": "Monitor ID"
+                      },
+                      "changedAt": {
+                        "type": "string",
+                        "description": "When the change was detected.",
+                        "title": "Changed at",
+                        "format": "date-time"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "description": "A summary of the change.",
+                        "title": "Change summary"
+                      },
+                      "diffJson": {
+                        "type": "object",
+                        "description": "The structured difference between the two checks.",
+                        "additionalProperties": {},
+                        "title": "Difference"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "description": "When the change was recorded.",
+                        "title": "Created at",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "description": "The detected changes.",
+                  "title": "Changes"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/monitors/{id}/pause": {
+      "post": {
+        "operationId": "PauseMonitor",
+        "summary": "Pause website monitor",
+        "description": "Stops a monitor's scheduled checks until it is resumed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Monitor ID",
+            "description": "The monitor ID, from List website monitors.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "A website monitor.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The monitor ID.",
+                  "title": "Monitor ID"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The watched URL.",
+                  "title": "URL"
+                },
+                "scope": {
+                  "type": "string",
+                  "description": "What is watched: page, site or wire.",
+                  "title": "Scope"
+                },
+                "watchMode": {
+                  "type": "string",
+                  "description": "How changes are compared: full page or specific data.",
+                  "title": "Watch mode"
+                },
+                "intervalMinutes": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The minutes between checks.",
+                  "title": "Interval (minutes)"
+                },
+                "isActive": {
+                  "type": "boolean",
+                  "description": "Whether the monitor is running.",
+                  "title": "Active"
+                },
+                "aiMode": {
+                  "type": "boolean",
+                  "description": "Whether AI filters out trivial changes.",
+                  "title": "AI mode"
+                },
+                "creditCostPerRun": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits each check costs.",
+                  "title": "Credits per check"
+                },
+                "nextRunAt": {
+                  "type": "string",
+                  "description": "When the next check runs.",
+                  "title": "Next check",
+                  "format": "date-time"
+                },
+                "lastCheckedAt": {
+                  "type": "string",
+                  "description": "When the last check ran.",
+                  "title": "Last check",
+                  "format": "date-time"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "description": "When the monitor pauses itself.",
+                  "title": "Expires at",
+                  "format": "date-time"
+                },
+                "alertWebhookUrl": {
+                  "type": "string",
+                  "description": "The webhook that receives change alerts.",
+                  "title": "Alert webhook URL"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the monitor was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "When the monitor last changed.",
+                  "title": "Updated at",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/monitors/{id}/resume": {
+      "post": {
+        "operationId": "ResumeMonitor",
+        "summary": "Resume website monitor",
+        "description": "Restarts a paused monitor's scheduled checks.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Monitor ID",
+            "description": "The monitor ID, from List website monitors.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "A website monitor.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The monitor ID.",
+                  "title": "Monitor ID"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The watched URL.",
+                  "title": "URL"
+                },
+                "scope": {
+                  "type": "string",
+                  "description": "What is watched: page, site or wire.",
+                  "title": "Scope"
+                },
+                "watchMode": {
+                  "type": "string",
+                  "description": "How changes are compared: full page or specific data.",
+                  "title": "Watch mode"
+                },
+                "intervalMinutes": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The minutes between checks.",
+                  "title": "Interval (minutes)"
+                },
+                "isActive": {
+                  "type": "boolean",
+                  "description": "Whether the monitor is running.",
+                  "title": "Active"
+                },
+                "aiMode": {
+                  "type": "boolean",
+                  "description": "Whether AI filters out trivial changes.",
+                  "title": "AI mode"
+                },
+                "creditCostPerRun": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The credits each check costs.",
+                  "title": "Credits per check"
+                },
+                "nextRunAt": {
+                  "type": "string",
+                  "description": "When the next check runs.",
+                  "title": "Next check",
+                  "format": "date-time"
+                },
+                "lastCheckedAt": {
+                  "type": "string",
+                  "description": "When the last check ran.",
+                  "title": "Last check",
+                  "format": "date-time"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "description": "When the monitor pauses itself.",
+                  "title": "Expires at",
+                  "format": "date-time"
+                },
+                "alertWebhookUrl": {
+                  "type": "string",
+                  "description": "The webhook that receives change alerts.",
+                  "title": "Alert webhook URL"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "When the monitor was created.",
+                  "title": "Created at",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "When the monitor last changed.",
+                  "title": "Updated at",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/monitors/{id}/run": {
+      "post": {
+        "operationId": "RunMonitorNow",
+        "summary": "Check website monitor now",
+        "description": "Runs a monitor's check now, outside its schedule. It costs the same as a scheduled check.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Monitor ID",
+            "description": "The monitor ID, from List website monitors.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The started check.",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the check started.",
+                  "title": "Success"
+                },
+                "jobId": {
+                  "type": "string",
+                  "description": "The job started for this check, for page and site monitors.",
+                  "title": "Job ID"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "A status message.",
+                  "title": "Message"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/ai-visibility/search": {
+      "post": {
+        "operationId": "StartAiVisibilitySearch",
+        "summary": "Compare AI engine answers",
+        "description": "Asks AI answer engines such as ChatGPT, Gemini and Google AI Overview the same question, to compare how they answer. Use Get AI answer comparison with the returned search ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "x-ms-summary": "Question",
+                  "description": "The question to ask every engine.",
+                  "maxLength": 2000
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Engines",
+                  "description": "The engine slugs to ask, from List AI engines. By default all of them.",
+                  "x-ms-visibility": "advanced"
+                },
+                "country": {
+                  "type": "string",
+                  "x-ms-summary": "Country",
+                  "description": "The two letter country code to ask from, for example us or in.",
+                  "x-ms-visibility": "advanced",
+                  "default": "us"
+                }
+              },
+              "required": [
+                "query"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The AI visibility search and its answers.",
+              "properties": {
+                "search_id": {
+                  "type": "string",
+                  "description": "The search ID.",
+                  "title": "Search ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The search status: running, completed or failed.",
+                  "title": "Status"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "The country the engines were asked from.",
+                  "title": "Country"
+                },
+                "synthesis": {
+                  "type": "string",
+                  "description": "Where the engines agree and differ, once at least two have answered.",
+                  "title": "Synthesis"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "One engine's answer.",
+                    "properties": {
+                      "source": {
+                        "type": "string",
+                        "description": "The engine slug.",
+                        "title": "Engine"
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "The engine's status: completed, failed or timed out.",
+                        "title": "Engine status"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "description": "A summary of the engine's answer.",
+                        "title": "Answer summary"
+                      },
+                      "full_content": {
+                        "type": "string",
+                        "description": "The engine's full answer as a JSON string.",
+                        "title": "Full answer"
+                      },
+                      "verdict": {
+                        "type": "string",
+                        "description": "Whether the answer agrees with the others: consensus or outlier.",
+                        "title": "Verdict"
+                      },
+                      "latency_ms": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "How long the engine took, in milliseconds.",
+                        "title": "Latency (ms)"
+                      },
+                      "credits_used": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The credits charged for this engine.",
+                        "title": "Credits used"
+                      },
+                      "error": {
+                        "type": "string",
+                        "description": "The error message, when the engine failed.",
+                        "title": "Engine error"
+                      }
+                    }
+                  },
+                  "description": "The answers from each engine.",
+                  "title": "Results"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/ai-visibility/search/{id}": {
+      "get": {
+        "operationId": "GetAiVisibilitySearch",
+        "summary": "Get AI answer comparison",
+        "description": "Gets the answers from each engine. Repeat until the status is completed or failed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Search ID",
+            "description": "The search ID returned by Compare AI engine answers.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The AI visibility search and its answers.",
+              "properties": {
+                "search_id": {
+                  "type": "string",
+                  "description": "The search ID.",
+                  "title": "Search ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The search status: running, completed or failed.",
+                  "title": "Status"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "The country the engines were asked from.",
+                  "title": "Country"
+                },
+                "synthesis": {
+                  "type": "string",
+                  "description": "Where the engines agree and differ, once at least two have answered.",
+                  "title": "Synthesis"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "One engine's answer.",
+                    "properties": {
+                      "source": {
+                        "type": "string",
+                        "description": "The engine slug.",
+                        "title": "Engine"
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "The engine's status: completed, failed or timed out.",
+                        "title": "Engine status"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "description": "A summary of the engine's answer.",
+                        "title": "Answer summary"
+                      },
+                      "full_content": {
+                        "type": "string",
+                        "description": "The engine's full answer as a JSON string.",
+                        "title": "Full answer"
+                      },
+                      "verdict": {
+                        "type": "string",
+                        "description": "Whether the answer agrees with the others: consensus or outlier.",
+                        "title": "Verdict"
+                      },
+                      "latency_ms": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "How long the engine took, in milliseconds.",
+                        "title": "Latency (ms)"
+                      },
+                      "credits_used": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The credits charged for this engine.",
+                        "title": "Credits used"
+                      },
+                      "error": {
+                        "type": "string",
+                        "description": "The error message, when the engine failed.",
+                        "title": "Engine error"
+                      }
+                    }
+                  },
+                  "description": "The answers from each engine.",
+                  "title": "Results"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/ai-visibility/sources": {
+      "get": {
+        "operationId": "ListAiVisibilitySources",
+        "summary": "List AI engines",
+        "description": "Lists the AI answer engines that Compare AI engine answers can ask.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The AI answer engines.",
+              "properties": {
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "An AI answer engine.",
+                    "properties": {
+                      "slug": {
+                        "type": "string",
+                        "description": "The engine slug.",
+                        "title": "Engine slug"
+                      },
+                      "label": {
+                        "type": "string",
+                        "description": "The engine name.",
+                        "title": "Engine name"
+                      }
+                    }
+                  },
+                  "description": "The engines.",
+                  "title": "Engines"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/sessions": {
+      "get": {
+        "operationId": "ListBrowserSessions",
+        "summary": "List browser sessions",
+        "description": "Lists your saved browser sessions, which let other actions reach pages behind a sign in. You create sessions in the Anakin dashboard.",
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-ms-summary": "Domain",
+            "description": "Only return sessions for this domain, for example amazon.com.",
+            "x-ms-visibility": "advanced"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "Your browser sessions.",
+              "properties": {
+                "sessions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "A saved browser session.",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The session ID. Use it as the session ID in other actions.",
+                        "title": "Session ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The session name.",
+                        "title": "Session name"
+                      },
+                      "websiteUrl": {
+                        "type": "string",
+                        "description": "The site the session is signed in to.",
+                        "title": "Website URL"
+                      },
+                      "websiteDomain": {
+                        "type": "string",
+                        "description": "The domain the session is signed in to.",
+                        "title": "Website domain"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "description": "Whether the session can be used.",
+                        "title": "Active"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "description": "When the session was saved.",
+                        "title": "Created at",
+                        "format": "date-time"
+                      },
+                      "lastUsedAt": {
+                        "type": "string",
+                        "description": "When the session was last used.",
+                        "title": "Last used at",
+                        "format": "date-time"
+                      },
+                      "expiresAt": {
+                        "type": "string",
+                        "description": "When the session expires.",
+                        "title": "Expires at",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "description": "Your sessions.",
+                  "title": "Sessions"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/sessions/{id}": {
+      "delete": {
+        "operationId": "DeleteBrowserSession",
+        "summary": "Delete browser session",
+        "description": "Permanently deletes a saved browser session. You need to sign in again in the dashboard to recreate it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Session ID",
+            "description": "The session ID, from List browser sessions.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The outcome.",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the request succeeded.",
+                  "title": "Success"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/ai/evaluate": {
+      "post": {
+        "operationId": "StartBrowserTask",
+        "summary": "Run AI browser task",
+        "description": "Starts an AI agent that drives a real cloud browser through a task, such as finding a product and reading its details. Use Get AI browser task result with the returned workflow ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "x-ms-summary": "Task",
+                  "description": "The task in natural language, specific about what to return. Never put passwords in it; use a session ID for pages behind a sign in."
+                },
+                "url": {
+                  "type": "string",
+                  "x-ms-summary": "Start URL",
+                  "description": "The page to open before starting.",
+                  "x-ms-visibility": "advanced"
+                },
+                "session_id": {
+                  "type": "string",
+                  "x-ms-summary": "Session ID",
+                  "description": "A saved browser session, for tasks behind a sign in.",
+                  "x-ms-visibility": "advanced"
+                },
+                "output_schema": {
+                  "type": "object",
+                  "x-ms-summary": "Output schema",
+                  "description": "A JSON schema for a structured result.",
+                  "additionalProperties": {},
+                  "x-ms-visibility": "advanced"
+                },
+                "max_steps": {
+                  "type": "integer",
+                  "x-ms-summary": "Maximum steps",
+                  "description": "A cap on the number of browser steps.",
+                  "format": "int32",
+                  "x-ms-visibility": "advanced"
+                },
+                "async": {
+                  "type": "boolean",
+                  "x-ms-summary": "Run in background",
+                  "description": "Whether the task runs in the background. Keep it on, since tasks can take several minutes.",
+                  "x-ms-visibility": "internal",
+                  "default": true
+                }
+              },
+              "required": [
+                "prompt",
+                "async"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The started browser task.",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "description": "The task ID. Pass it to Get AI browser task result.",
+                  "title": "Workflow ID"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The task status.",
+                  "title": "Status"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/ai/jobs/{id}": {
+      "get": {
+        "operationId": "GetBrowserTaskResult",
+        "summary": "Get AI browser task result",
+        "description": "Gets the status and result of an AI browser task. Repeat until the status is completed, failed or timed out.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Workflow ID",
+            "description": "The workflow ID returned by Run AI browser task.",
+            "x-ms-url-encoding": "single"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "description": "The browser task and its result.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "The task status: running, completed, failed or timed out.",
+                  "title": "Status"
+                },
+                "result": {
+                  "type": "object",
+                  "description": "The task result, shaped by the output schema when one was given.",
+                  "additionalProperties": {},
+                  "title": "Result"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "The error message, when the task failed.",
+                  "title": "Error"
+                }
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "advanced",
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {},
+  "parameters": {},
+  "responses": {},
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "X-API-Key"
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
+  "tags": [],
+  "x-ms-connector-metadata": [
+    {
+      "propertyName": "Website",
+      "propertyValue": "https://anakin.io"
+    },
+    {
+      "propertyName": "Privacy policy",
+      "propertyValue": "https://anakin.io/connector-privacy"
+    },
+    {
+      "propertyName": "Categories",
+      "propertyValue": "Data;Business Intelligence"
+    }
+  ]
+}
