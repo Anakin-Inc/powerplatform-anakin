@@ -28,3 +28,5 @@ jobs:
         run: >
           uv run --no-project --with jsonschema --with openapi-spec-validator --with json5
           python tools/check_connector.py certified-connectors/Anakin tools/schemas
+      - name: Response schemas match the documented API responses
+        run: uv run --no-project --with httpx --with jsonschema python tools/check_docs_examples.py
